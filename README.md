@@ -41,7 +41,7 @@ The output of each rule is store to specific folder that is produced by the work
          
 For this version the schematic describing the landmarks and measurements are [here](https://github.com/hdr-bgnn/minnowTraits/blob/main/Old_landmark_measure_map/Landmark_Measure.png). This an older version of the labels.
 
-The first 4 steps are represented in the following workflow diagram, and the 5th step can be found on the <a href="https://github.com/hdr-bgnn/Morphology-analysis">Morphology_Analysis repository</a>.
+The first 4 steps are represented in the following workflow diagram, and the 5th step (Stage 2) can be found on the <a href="https://github.com/hdr-bgnn/Morphology-analysis">Morphology_Analysis repository</a>.
 
 ![Workflow overview 1](https://github.com/hdr-bgnn/BGNN_Snakemake/blob/main/Picture_for_Documentation/Workflow_stage_1.png)
 
