@@ -26,18 +26,18 @@ The output of each rule is store to specific folder that is produced by the work
       * This code produces an image of a segmented fish (color coding following example in "Stage 1" below).
       * The input cropped image must be scaled to 800x320 pixels.
       * We resize the output segmented image to the size of the cropped image (which is the size of the bounding box plus 10% increase).
-         * This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
+           - This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
       * Images retain the original file name and we add the suffix "_segmented".
       * The segmented image is saved in the folder **Segmented**.
       
    5. First version of **morphology** traits extraction, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Yasin. The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). 
       * The code creates the folder **Morphology** to store the outputs
       * The outputs include:
-         * .json files of the presence and size of the segmented traits (called blobs) saved in the folder **Morphology/Presence**.
-         * .json files of the position of the extracted landmarks saved in the folder **Morphology/Landmark**. 
-         * .json files of the measurements of distance and area traits saved in the folder **Morphology/Measure**.
-         * A visualization of the landmarks on the segmented fish image saved in the folder **Morphology/Vis_landmarks**.
-            * Images retain the original file name and we add the suffix "_vis_landmarks".
+           - .json files of the presence and size of the segmented traits (called blobs) saved in the folder **Morphology/Presence**.
+           - .json files of the position of the extracted landmarks saved in the folder **Morphology/Landmark**. 
+           - .json files of the measurements of distance and area traits saved in the folder **Morphology/Measure**.
+           - A visualization of the landmarks on the segmented fish image saved in the folder **Morphology/Vis_landmarks**.
+               * Images retain the original file name and we add the suffix "_vis_landmarks".
          
 For this version the schematic describing the landmarks and measurements are [here](https://github.com/hdr-bgnn/minnowTraits/blob/main/Old_landmark_measure_map/Landmark_Measure.png). This an older version of the labels.
 
