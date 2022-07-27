@@ -6,15 +6,42 @@ First complete version of the BGNN image segmentation workflow managed using sna
 The image segmentation workflow is managed using snakemake, a user-friendly python workflow manager. Snakemake uses a syntax based on python and can use python code in the definition of the workflow. 
 
 The segmentation workflow consists of the following steps each defined by a "rule". 
-The output of each rule is store to specific folder:
-   1. Download the fish **Images** from [Tulane server](http://www.tubri.org/HDR/INHS/) using a simple bash script: Folder: Images/
-   2. Extract **Metadata** information using Detectron2 (deep learning segmentation). The 2 important parameters used from the metadata, are the bounding box(bbox) around the fish and scale (pixel/cm from the ruler). Additionally, we save the mask of the fish outline. The code developed by Drexel and the script used can be found [here](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py). **Folder: Metadata/ and Mask/**
-   3.	Create **Cropped** images of the fish using the bounding box from Metadata (we had 10% increase in size from the original bbox to prevent truncation of the file). The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py). **Folder: Cropped/** 
-   4. **Segmented** traits using code developed by Maruf and reorganize by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py). Folder Segment/
-   5. First version to	Extraction of **morphology** traits, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Yasin. The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). **Folder Morphology/Presence, Morphology/Landmark, Morphology/Measure, Morphology/Vis_landmarks**
+The output of each rule is store to specific folder that is produced by the workflow:
+   1. Download the fish **Images** from [Tulane server](http://www.tubri.org/HDR/INHS/) using a simple bash script.
+      * Images are saved to the folder **Images**.
+   
+   2. Extract **Metadata** information using Detectron2 (deep learning segmentation). The code developed by Drexel and the script used can be found [here](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py).
+      * This code extracts the ruler scale (pixels/cm).
+      * This code identified and extracts a bounding box around the fish in the image.
+      * Information about the ruler scale and bounding box size are saved as .json files in the folder **Metadata**.
+      * Images retain the original file name and we add the suffix "_mask".
+      * The mask is saved in the folder **Mask**.
+      
+   3.	Create **Cropped** images of the fish using the bounding box from Metadata. The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py).
+      * We increased the bounding box around the fish by 2.5% on each side (10% total) for the crop to prevent truncation of the file.
+      * Images retain the original file name and we add the suffix "_cropped".
+      * The cropped image is in the folder **Cropped**.
+      
+   4. **Segmented** traits using code developed by Maruf and reorganize by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py).
+      * This code produces an image of a segmented fish (color coding following example in "Stage 1" below).
+      * The input cropped image must be scaled to 800x320 pixels.
+      * We resize the output segmented image to the size of the cropped image (which is the size of the bounding box plus 10% increase).
+           - This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
+      * Images retain the original file name and we add the suffix "_segmented".
+      * The segmented image is saved in the folder **Segmented**.
+      
+   5. First version of **morphology** traits extraction, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Yasin. The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). 
+      * The code creates the folder **Morphology** to store the outputs
+      * The outputs include:
+           - .json files of the presence and size of the segmented traits (called blobs) saved in the folder **Morphology/Presence**.
+           - .json files of the position of the extracted landmarks saved in the folder **Morphology/Landmark**. 
+           - .json files of the measurements of distance and area traits saved in the folder **Morphology/Measure**.
+           - A visualization of the landmarks on the segmented fish image saved in the folder **Morphology/Vis_landmarks**.
+               * Images retain the original file name and we add the suffix "_vis_landmarks".
+         
 For this version the schematic describing the landmarks and measurements are [here](https://github.com/hdr-bgnn/minnowTraits/blob/main/Old_landmark_measure_map/Landmark_Measure.png). This an older version of the labels.
 
-These 4 steps are represented in the following workflow diagram
+The first 4 steps are represented in the following workflow diagram, and the 5th step (Stage 2) can be found on the <a href="https://github.com/hdr-bgnn/Morphology-analysis">Morphology_Analysis repository</a>.
 
 ![Workflow overview 1](https://github.com/hdr-bgnn/BGNN_Snakemake/blob/main/Picture_for_Documentation/Workflow_stage_1.png)
 
@@ -32,32 +59,32 @@ These 4 steps are represented in the following workflow diagram
    - Traits segmentation [code here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py)
    - Morphology [code here](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py)
  
-I believe the scripts should live on their respective repository. This part is still a bit comfusing... Need to work on that.
-Yes I agree we are try to do it. WIP
+_I believe the scripts should live on their respective repository. This part is still a bit comfusing... Need to work on that.
+Yes I agree we are try to do it. WIP_
  
 4. Containers
    - these are available at https://cloud.sylabs.io/library/thibaulttabarin
    - The rest is in the release on their respective gihub repo
 
 5. Data
-   - Images/ : store the ouput from the Download step. Images downloaded from Tulane server
-   - Metadata/ : store the output from generate_metadata.py code developed by Drexel team. One file ".json" per image
-   - Cropped/ : store the ouput from Crop image. 
-   - Segmented/ : store the ouput from Segment trait using code developed by M. Maruf (Virginia Tech)
-   - Morphology/ : in development, current version (1) has been develop by Thibault Tabarin (Battelle), for information about the trait and morphology check [minnowsTraits repo](https://github.com/hdr-bgnn/minnowTraits) and [Morphology-analysis repo](https://github.com/hdr-bgnn/Morphology-analysis)
-         + Presence : presence/absence table
-         + Measure : specific measurement the fish (e.i. head depth, head width, snout to eye distance....)
-         + Landmark : table with specific landmark positions used to determinate the measurement 
-         + Vis_Landmark : image of segmented fish with landmark
+   - **Images** : store the ouput from the Download step. Images downloaded from Tulane server
+   - **Metadata** : store the output from generate_metadata.py code developed by Drexel team. One file ".json" per image
+   - **Cropped** : store the ouput from Crop image. 
+   - **Segmented** : store the ouput from Segment trait using code developed by M. Maruf (Virginia Tech)
+   - **Morphology** : in development, current version (1) has been develop by Thibault Tabarin (Battelle), for information about the trait and morphology check [minnowsTraits repo](https://github.com/hdr-bgnn/minnowTraits) and [Morphology-analysis repo](https://github.com/hdr-bgnn/Morphology-analysis)
+      - **Presence** : presence/absence table
+      - **Measure** : specific measurement the fish (e.i. head depth, head width, snout to eye distance....)
+      - **Landmark** : table with specific landmark positions used to determinate the measurement 
+      - **Vis_Landmark** : image of segmented fish with landmark
 
 # 2- Setup and Requirements
 
    - To start with OSC system check instructions in Setup_Snakemake_OSC.txt. (not up to date, for question post issues)
-   - Todo opy paste the contain of Setup_Snakemake_OSC.txt here and format it nicely... Probably a lot of typo to fix
+   - _Todo copy paste the contain of Setup_Snakemake_OSC.txt here and format it nicely... Probably a lot of typo to fix_
 
 # 3- Download models
 
-   Not sure if this is relevant here... Keep it for the moment. This should go with the documentation for indivdual code on ecah correponding repository
+   _Not sure if this is relevant here... Keep it for the moment. This should go with the documentation for indivdual code on ecah correponding repository_
    *Models for segment trait* : located at https://drive.google.com/uc?id=1HBSGXbWw5Vorj82buF-gCi6S2DpF4mFL
    Follow instruction in BGNN_Snakemake/Containers/Singularity_def_segment_trait/Scripts/saved_models/load.txt
    or
@@ -78,9 +105,9 @@ Yes I agree we are try to do it. WIP
 
 # 5- Codes and Containers location
 
-Some of the containers are created using github action, some other are created using singularity remote builder. We are currently transitioning all the containers to github action.
+Some of the containers are created using GitHub action, some other are created using singularity remote builder. We are currently transitioning all the containers to github action.
 
-there are 4 containers of interest (Crop_image and Morphology function are contained in the same container:
+There are 4 containers of interest (Crop_image and Morphology function are contained in the same container:
 
 
 * [Metadata_generator](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py) :
