@@ -31,9 +31,6 @@ rule download_image:
     params: download_link = lambda wildcards: samples_df.loc[wildcards.image, "path"]
     shell: 'wget -O {output} {params.download_link}'
 
-rule clean:
-    shell:'rm -rf Images/* Metadata/* Cropped/*'
-
 rule generate_metadata:
     input:'Images/{image}.jpg'
     output:
@@ -49,7 +46,7 @@ rule Cropped_image:
         metadata = 'Metadata/{image}.json'
     output:'Cropped/{image}_cropped.jpg'
     singularity:
-        'docker://ghcr.io/hdr-bgnn/bgnn_snakemake/crop_morph:0.0.16'
+        'docker://ghcr.io/hdr-bgnn/crop_image:0.0.2'
     shell: 'Crop_image_main.py {input.image} {input.metadata} {output}'
 
 rule Segmentation:
@@ -68,21 +65,9 @@ rule Morphological_analysis:
         measure = "Morphology/Measure/{image}_measure.json",
         landmark = "Morphology/Landmark/{image}_landmark.json",
         presence = "Morphology/Presence/{image}_presence.json",
-        vis_landmarks = "Morphology/Vis_landmarks/{image}_landmark_image.png"
-   
+        vis_landmarks = "Morphology/Vis_landmarks/{image}_landmark_image.png"   
     singularity:
         "docker://ghcr.io/hdr-bgnn/morphology-analysis/morphology:0.0.1"
     shell:
         'Morphology_main.py {input.image} {input.metadata} {output.measure} {output.landmark} {output.presence} {output.vis_landmarks}'
 
-# This is not executed in this version, it should be executed at the end when you want to collect the .csv with
-# all the results
-rule Merge_files:
-    input : MORPHOLOGY
-    output : 'Result_morphology/result.csv'
-    params :
-        input_file = 'Morphology/',
-    singularity:
-        "docker://ghcr.io/hdr-bgnn/bgnn_snakemake/crop_morph:0.0.16"
-    shell:
-        "Merge_files_main.py {params.input_file} {output}"
