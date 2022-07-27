@@ -18,19 +18,19 @@ The output of each rule is store to specific folder that is produced by the work
       * The mask is saved in the folder **Mask**.
       
    3.	Create **Cropped** images of the fish using the bounding box from Metadata. The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py).
-      * We increased the bounding box around the fish by 2.5% on each side (10% total) for the crop to prevent truncation of the file.
+      * We increased the bounding box around the fish by 2.5% on each side (5% total) for the crop to prevent truncation of the file.
       * Images retain the original file name and we add the suffix "_cropped".
       * The cropped image is in the folder **Cropped**.
       
-   4. **Segmented** traits using code developed by Maruf and reorganize by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py).
+   4. **Segmented** traits using code developed by Maruf and reorganized by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py).
       * This code produces an image of a segmented fish (color coding following example in "Stage 1" below).
-      * The input cropped image must be scaled to 800x320 pixels.
-      * We resize the output segmented image to the size of the cropped image (which is the size of the bounding box plus 10% increase).
+      * The input cropped image must be resized to 800x320 pixels.
+      * We then resize the output segmented image (800x320) to the size of the cropped image (which is the size of the bounding box plus 5% increase).
            - This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
       * Images retain the original file name and we add the suffix "_segmented".
       * The segmented image is saved in the folder **Segmented**.
       
-   5. First version of **morphology** traits extraction, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Yasin. The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). 
+   5. First version of **morphology** traits extraction, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Tulane (Yasin, BAhadir and Hank). The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). 
       * The code creates the folder **Morphology** to store the outputs
       * The outputs include:
            - .json files of the presence and size of the segmented traits (called blobs) saved in the folder **Morphology/Presence**.
@@ -58,9 +58,6 @@ The first 4 steps are represented in the following workflow diagram, and the 5th
    - Cropping the fish using bbox and generating cropped image [code here](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py)
    - Traits segmentation [code here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py)
    - Morphology [code here](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py)
- 
-_I believe the scripts should live on their respective repository. This part is still a bit comfusing... Need to work on that.
-Yes I agree we are try to do it. WIP_
  
 4. Containers
    - these are available at https://cloud.sylabs.io/library/thibaulttabarin
