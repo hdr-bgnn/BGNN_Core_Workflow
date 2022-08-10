@@ -47,28 +47,28 @@ rule Cropped_image:
         metadata = 'Metadata/{image}.json'
     output:'Cropped/{image}_cropped.jpg'
     singularity:
-        'docker://ghcr.io/hdr-bgnn/crop_image:0.0.2'
+        'docker://ghcr.io/hdr-bgnn/crop_image:0.0.3'
     shell: 'Crop_image_main.py {input.image} {input.metadata} {output}'
 
 rule Segmentation:
     input: 'Cropped/{image}_cropped.jpg'
     output: 'Segmented/{image}_segmented.png'
     singularity:
-        'docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.4'
+        'docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.5'
     shell:
-        'segmentation_main.py {input} {output}'
+        'segmentation_main_rescale_origin.py {input} {output}'
 
 rule Morphological_analysis:
     input:
         image = 'Segmented/{image}_segmented.png',
-	metadata = 'Metadata/{image}.json'
+        metadata = 'Metadata/{image}.json'
     output:
         measure = "Morphology/Measure/{image}_measure.json",
         landmark = "Morphology/Landmark/{image}_landmark.json",
         presence = "Morphology/Presence/{image}_presence.json",
         vis_landmarks = "Morphology/Vis_landmarks/{image}_landmark_image.png"   
     singularity:
-        "docker://ghcr.io/hdr-bgnn/morphology-analysis/morphology:0.0.1"
+        "docker://ghcr.io/hdr-bgnn/morphology-analysis/morphology:0.2.0"
     shell:
         'Morphology_main.py {input.image} {input.metadata} {output.measure} {output.landmark} {output.presence} {output.vis_landmarks}'
 
