@@ -258,9 +258,8 @@ There are 4 containers of interest (Crop_image and Morphology function are conta
 
 
 ## Running using docker
-The pipeline can be run using docker to provide the required snakemake and singularity environment.
-After cloning the repo from within the BGNN_Snakemake directory.
-
+The pipeline can be run using [docker](https://docs.docker.com/get-docker/) to provide the required snakemake and singularity environment.
+After installing docker clone this repo and cd into the BGNN_Snakemake directory.
 To process the images in `List/list_test.csv` using the pipeline run (on macOS or Linux):
 ```
 docker run --privileged -it -v $(pwd):/src -w /src snakemake/snakemake:v7.12.1 \
