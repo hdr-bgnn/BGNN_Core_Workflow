@@ -255,3 +255,15 @@ There are 4 containers of interest (Crop_image and Morphology function are conta
    Keep in mind that `sacct` defaults to showing jobs from the current day. See [sacct docs](https://slurm.schedmd.com/sacct.html#SECTION_DEFAULT-TIME-WINDOW) for options to specify a different time range.
 
 ## 3- Rerun only one part of the pipeline (work in progress)
+
+
+## Running using docker
+The pipeline can be run using [docker](https://docs.docker.com/get-docker/) to provide the required snakemake and singularity environment.
+After installing docker clone this repo and cd into the BGNN_Snakemake directory.
+To process the images in `List/list_test.csv` using the pipeline run (on macOS or Linux):
+```
+docker run --privileged -it -v $(pwd):/src -w /src snakemake/snakemake:v7.12.1 \
+    snakemake -c4 --use-singularity --config list=List/list_test.csv
+
+```
+For Windows use PowerShell replacing `$(pwd)` with `${PWD}` in the command above.

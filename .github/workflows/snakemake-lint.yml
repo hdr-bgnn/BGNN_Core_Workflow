@@ -1,0 +1,16 @@
+name: Run snakemake lint process
+
+on:
+  push
+
+jobs:
+  lint-workflow:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Linting
+      uses: snakemake/snakemake-github-action@v1.23.0
+      with:
+        snakefile: 'workflow/Snakefile'
+        args: '--lint'
