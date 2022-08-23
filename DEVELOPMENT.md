@@ -13,13 +13,13 @@ docker run --privileged -it -v $(pwd):/src -w /src snakemake/snakemake:v7.12.1 b
 ```
 Once you are finished you can type `exit` to quit.
 
-## Running Step by Step
+## Run Step by Step
 By default the workflow will run the entire process from end to end.
 When working on the pipeline it can be useful to run steps one at a time.
 To do so we should isolate a single image in the input CSV file we wish to process.
 Then you can pass the output filename for a step to the snakemake command.
 
-Below we will show how to run each step for the `INHS_FISH_14841` image included in `List/list_test.csv`.
+Below we will show how to run each step for the `INHS_FISH_14841` image included in `List/list_test.csv`. 
 
 ### Step 1: Download Image
 The output of the download_image rule has an output of `Images/{image}.jpg`.
@@ -27,6 +27,11 @@ The output of the download_image rule has an output of `Images/{image}.jpg`.
 To download the `INHS_FISH_14841` image run the following command:
 ```
 snakemake -c1 --use-singularity --config list=List/list_test.csv -- Images/INHS_FISH_14841.jpg
+```
+
+You can also specify multiple files to be created like so:
+```
+snakemake -c1 --use-singularity --config list=List/list_test.csv -- Images/INHS_FISH_14841.jpg Images/INHS_FISH_38136.jpg
 ```
 
 ### Step 2: Generate Metadata
@@ -51,4 +56,11 @@ snakemake -c1 --use-singularity --config list=List/list_test.csv -- Segmented/IN
 ### Step 5: Create Morphological Analysis
 ```
 snakemake -c1 --use-singularity --config list=List/list_test.csv -- Morphology/Measure/INHS_FISH_14841_measure.json
+```
+
+## Stop Early
+If you wish to stop early when running the pipeline snakemake has a `--until <rulename>` argument.
+For example to stop at the `generate_metadata` rule you would run:
+```
+snakemake -c1 --use-singularity --config list=List/list_test.csv --until generate_metadata
 ```
