@@ -9,6 +9,7 @@ rule create_morphological_analysis:
         vis_landmarks = "Morphology/Vis_landmarks/{image}_landmark_image.png"
     log: 'logs/create_morphological_analysis_{image}.log'
     container:
-        "docker://ghcr.io/hdr-bgnn/morphology-analysis/morphology:0.2.0"
+        "docker://jbradley/morphology-analysis:dev"
     shell:
-        'Morphology_main.py {input.image} {input.metadata} {output.measure} {output.landmark} {output.presence} {output.vis_landmarks} > {log} 2>&1'
+        'Morphology_main.py --metadata {input.metadata} --morphology {output.measure} --landmark {output.landmark} --lm_image {output.vis_landmarks} {input.image} {output.presence} > {log} 2>&1'
+
