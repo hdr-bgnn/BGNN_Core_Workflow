@@ -7,5 +7,5 @@ rule create_morphological_analysis:
     container:
         "docker://jbradley/morphology-analysis:dev"
     shell:
-        'Morphology_main.py {input.image} {output.presence} > {log} 2>&1'
+        'Morphology_main.py {input.image} {output} > {log} 2>&1'
 
