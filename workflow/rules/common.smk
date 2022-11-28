@@ -22,4 +22,4 @@ def get_name_to_url():
 def get_morphology_files(wildcards):
     name_to_url = get_name_to_url()
     NAMES = list(name_to_url.index)
-    return expand("Morphology/Measure/{image}_measure.json", image=NAMES)
+    return expand("Morphology/Presence/{image}_presence.json", image=NAMES)
