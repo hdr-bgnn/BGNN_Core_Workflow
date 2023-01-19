@@ -4,7 +4,6 @@ include: "rules/generate_metadata.smk"
 include: "rules/transform_metadata.smk"
 include: "rules/crop_image.smk"
 include: "rules/segment_image.smk"
-include: "rules/create_morphological_analysis.smk"
 
 rule all:
     input:
