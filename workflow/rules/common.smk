@@ -19,7 +19,7 @@ def get_name_to_url():
     return df['path']
 
 
-def get_morphology_files(wildcards):
+def get_segmentation_files(wildcards):
     name_to_url = get_name_to_url()
     NAMES = list(name_to_url.index)
-    return expand("Morphology/Measure/{image}_measure.json", image=NAMES)
+    return expand("Segmented/{image}_segmented.png", image=NAMES)

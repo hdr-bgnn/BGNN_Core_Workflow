@@ -30,22 +30,9 @@ The output of each rule is store to specific folder that is produced by the work
       * Images retain the original file name and we add the suffix "_segmented".
       * The segmented image is saved in the folder **Segmented**.
       
-   5. First version of **morphology** traits extraction, including linear measurements, areas, ratios, and landmarks. This part is done in collaboration between Battelle (Meghan, Paula and Thibault) and Tulane (Yasin, BAhadir and Hank). The code is under [Morphology_main.py](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py). 
-      * The code creates the folder **Morphology** to store the outputs
-      * The outputs include:
-           - .json files of the presence and size of the segmented traits (called blobs) saved in the folder **Morphology/Presence**.
-           - .json files of the position of the extracted landmarks saved in the folder **Morphology/Landmark**. 
-           - .json files of the measurements of distance and area traits saved in the folder **Morphology/Measure**.
-           - A visualization of the landmarks on the segmented fish image saved in the folder **Morphology/Vis_landmarks**.
-               * Images retain the original file name and we add the suffix "_vis_landmarks".
-         
-For this version the schematic describing the landmarks and measurements are [here](https://github.com/hdr-bgnn/minnowTraits/blob/main/Old_landmark_measure_map/Landmark_Measure.png). This an older version of the labels.
-
-The first 4 steps are represented in the following workflow diagram, and the 5th step (Stage 2) can be found on the <a href="https://github.com/hdr-bgnn/Morphology-analysis">Morphology_Analysis repository</a>.
+The steps are represented in the following workflow diagram.
 
 ![Workflow overview 1](https://github.com/hdr-bgnn/BGNN_Snakemake/blob/main/Picture_for_Documentation/Workflow_stage_1.png)
-
-![Workflow overview 2](https://github.com/hdr-bgnn/BGNN_Snakemake/blob/main/Picture_for_Documentation/Workflow_stage_2.png)
 
 ## Workflow components
 
@@ -57,7 +44,6 @@ The first 4 steps are represented in the following workflow diagram, and the 5th
    - Generating metadata (in particular bounding box, bbox) [code here](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py)
    - Cropping the fish using bbox and generating cropped image [code here](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py)
    - Traits segmentation [code here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py)
-   - Morphology [code here](https://github.com/hdr-bgnn/Morphology-analysis/blob/main/Scripts/Morphology_main.py)
  
 4. Containers
    - these are available at https://cloud.sylabs.io/library/thibaulttabarin
@@ -68,11 +54,6 @@ The first 4 steps are represented in the following workflow diagram, and the 5th
    - **Metadata** : store the output from generate_metadata.py code developed by Drexel team. One file ".json" per image
    - **Cropped** : store the ouput from Crop image. 
    - **Segmented** : store the ouput from Segment trait using code developed by M. Maruf (Virginia Tech)
-   - **Morphology** : in development, current version (1) has been develop by Thibault Tabarin (Battelle), for information about the trait and morphology check [minnowsTraits repo](https://github.com/hdr-bgnn/minnowTraits) and [Morphology-analysis repo](https://github.com/hdr-bgnn/Morphology-analysis)
-      - **Presence** : presence/absence table
-      - **Measure** : specific measurement the fish (e.i. head depth, head width, snout to eye distance....)
-      - **Landmark** : table with specific landmark positions used to determinate the measurement 
-      - **Vis_Landmark** : image of segmented fish with landmark
 
 # 2- Setup and Requirements
 
@@ -104,7 +85,7 @@ The first 4 steps are represented in the following workflow diagram, and the 5th
 
 Some of the containers are created using GitHub action, some other are created using singularity remote builder. We are currently transitioning all the containers to github action.
 
-There are 4 containers of interest (Crop_image and Morphology function are contained in the same container:
+There are 3 containers of interest:
 
 
 * [Metadata_generator](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py) :
@@ -122,11 +103,7 @@ There are 4 containers of interest (Crop_image and Morphology function are conta
    docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.4
    Usage : segmentation_main.py {Cropped.png} {Segmented.png}
    ```
-* [Morphology](https://github.com/hdr-bgnn/Morphology-analysis) :
-    ```
-    docker://ghcr.io/hdr-bgnn/morphology-analysis/morphology:latest
-    Usage : Morphology_main.py  <Segemented.png> {metadata.json} {measure.json} {landmark.json} {presence.json} {image_lm.png}
-    ```
+
 # 6- Quick start with OSC
 
 ## 1- Using interactive (command sinteractive)
@@ -240,7 +217,6 @@ There are 4 containers of interest (Crop_image and Morphology function are conta
    Metadata/
    Mask/
    Segmented/
-   Morphology/Measure, Morphology/Presence\, Morphology/Landmark, Morphology/Vis_landmark
    ```
    
    ---
