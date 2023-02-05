@@ -1,10 +1,58 @@
 include: "rules/common.smk"
-include: "rules/download_image.smk"
-include: "rules/generate_metadata.smk"
-include: "rules/transform_metadata.smk"
-include: "rules/crop_image.smk"
-include: "rules/segment_image.smk"
 
+# By default create segmentation files from a CSV
+# python code is defined in common.smk
 rule all:
     input:
         get_segmentation_files
+
+# Download images based on CSV file passed to Snakemake via `--config list=<CSV-filepath>`
+rule download_image:
+    output:'Images/{image}.jpg'
+    params: download_link = lambda wildcards: get_name_to_url()[wildcards.image]
+    log: 'logs/download_image_{image}.log'
+    container:
+        'docker://quay.io/biocontainers/gnu-wget:1.18--h7132678_6'
+    shell: 'wget -O {output} {params.download_link} > {log} 2>&1'
+
+# Perform ML object detection on an image
+rule generate_metadata:
+    input:'Images/{image}.jpg'
+    output:
+        metadata = 'DrexelMetadata/{image}.json',
+        mask = 'Mask/{image}_mask.png'
+    log: 'logs/generate_metadata_{image}.log'
+    container:
+        'docker://ghcr.io/hdr-bgnn/drexel_metadata:0.5'
+    shell: 'gen_metadata.py {input} --device cpu --outfname {output.metadata} --maskfname {output.mask} > {log} 2>&1'
+
+# Transform metadata into a format compatible with the following rules
+rule transform_metadata:
+    input: 'DrexelMetadata/{image}.json'
+    output: 'Metadata/{image}.json',
+    log: 'logs/transform_metadata_{image}.log'
+    container:
+        'docker://ghcr.io/hdr-bgnn/drexel_metadata_formatter:0.0.1'
+    shell: 'python /pipeline/dm_formatter.py {input} {output} > {log} 2>&1'
+
+# Crop an image based on the bounding box in the metadata from object detection
+rule crop_image:
+    input:
+        image = 'Images/{image}.jpg',
+        metadata = 'Metadata/{image}.json'
+    output: 'Cropped/{image}_cropped.jpg'
+    log: 'logs/crop_image_{image}.log'
+    container:
+        'docker://ghcr.io/hdr-bgnn/crop_image:0.0.4'
+    shell: 'Crop_image_main.py {input.image} {input.metadata} {output} > {log} 2>&1'
+
+# Segment cropped images
+rule segment_image:
+    input: 'Cropped/{image}_cropped.jpg'
+    output: 'Segmented/{image}_segmented.png'
+    log: 'logs/segment_image_{image}.log'
+    container:
+        'docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.6'
+    shell:
+        'segmentation_main_rescale_origin.py {input} {output} > {log} 2>&1'
+
