@@ -19,7 +19,7 @@ The output of each rule is stored to a specific folder that is produced by the w
       
    3.	Create **Cropped** images of the fish using the bounding box from Metadata. The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py).
       * We increased the bounding box around the fish by 2.5% on each side (5% total) for the crop to prevent truncation of the file.
-      * Images retain the file ARKID and we add the suffix "_cropped".
+      * The output filename is based on the image filename adding the filename suffix "_cropped".
       * The cropped image is in the folder **Cropped**.
       
    4. **Segmented** traits using code developed by Maruf and reorganized by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py).
