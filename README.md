@@ -27,7 +27,7 @@ The output of each rule is stored to a specific folder that is produced by the w
       * The input cropped image must be resized to 800x320 pixels.
       * We then resize the output segmented image (800x320) to the size of the cropped image (which is the size of the bounding box plus 5% increase).
            - This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
-      * Images retain the file ARKID and we add the suffix "_segmented".
+      * The output filename is based on the image filename adding the filename suffix "_segmented".
       * The segmented image is saved in the folder **Segmented**.
       
 The steps are represented in the following workflow diagram.
