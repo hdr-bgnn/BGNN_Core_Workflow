@@ -14,7 +14,7 @@ The output of each rule is stored to a specific folder that is produced by the w
       * This code extracts the ruler scale (pixels/cm).
       * This code identified and extracts a bounding box around the fish in the image.
       * Information about the ruler scale and bounding box size are saved as .json files in the folder **Metadata**.
-      * Images retain the file ARKID and we add the suffix "_mask".
+      * The output filename is based on the image filename adding the filename suffix "_mask" and changing the extension.
       * The mask is saved in the folder **Mask**.
       
    3.	Create **Cropped** images of the fish using the bounding box from Metadata. The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py).
