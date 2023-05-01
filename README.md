@@ -7,7 +7,7 @@ The image segmentation workflow is managed using snakemake, a user-friendly pyth
 
 The segmentation workflow consists of the following steps each defined by a "rule". 
 The output of each rule is stored to a specific folder that is produced by the workflow:
-   1. Download the fish **Images** from [Fish-AIR](https://fishair.org/) using a simple bash script.
+   1. Download the fish **Images** from URLs within the input CSV file. The CSV file must have a column named `path` that contains the URL of the image. The CSV file must have a column named `original_file_name` that will be used to create a unique filename for the images downloaded.
       * Images are saved to the folder **Images**.
    
    2. Extract **Metadata** information using Detectron2 (deep learning segmentation). The code developed by Drexel and the script used can be found [here](https://github.com/hdr-bgnn/drexel_metadata).
