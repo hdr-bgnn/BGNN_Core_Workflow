@@ -6,20 +6,20 @@ First complete version of the BGNN image segmentation workflow managed using sna
 The image segmentation workflow is managed using snakemake, a user-friendly python workflow manager. Snakemake uses a syntax based on python and can use python code in the definition of the workflow. 
 
 The segmentation workflow consists of the following steps each defined by a "rule". 
-The output of each rule is store to specific folder that is produced by the worrkflow:
-   1. Download the fish **Images** from [Tulane server](http://www.tubri.org/HDR/INHS/) using a simple bash script.
+The output of each rule is stored to a specific folder that is produced by the workflow:
+   1. Download the fish **Images** from URLs within the input CSV file. The CSV file must have a column named `path` that contains the URL of the image. The CSV file must have a column named `original_file_name` that will be used to create a unique filename for the images downloaded.
       * Images are saved to the folder **Images**.
    
-   2. Extract **Metadata** information using Detectron2 (deep learning segmentation). The code developed by Drexel and the script used can be found [here](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py).
+   2. Extract **Metadata** information using Detectron2 (deep learning segmentation). The code developed by Drexel and the script used can be found [here](https://github.com/hdr-bgnn/drexel_metadata).
       * This code extracts the ruler scale (pixels/cm).
       * This code identified and extracts a bounding box around the fish in the image.
       * Information about the ruler scale and bounding box size are saved as .json files in the folder **Metadata**.
-      * Images retain the original file name and we add the suffix "_mask".
+      * The output filename is based on the image filename adding the filename suffix "_mask" and changing the extension.
       * The mask is saved in the folder **Mask**.
       
    3.	Create **Cropped** images of the fish using the bounding box from Metadata. The code is under [Crop_image_main.py](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py).
       * We increased the bounding box around the fish by 2.5% on each side (5% total) for the crop to prevent truncation of the file.
-      * Images retain the original file name and we add the suffix "_cropped".
+      * The output filename is based on the image filename adding the filename suffix "_cropped".
       * The cropped image is in the folder **Cropped**.
       
    4. **Segmented** traits using code developed by Maruf and reorganized by Thibault [here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py).
@@ -27,7 +27,7 @@ The output of each rule is store to specific folder that is produced by the worr
       * The input cropped image must be resized to 800x320 pixels.
       * We then resize the output segmented image (800x320) to the size of the cropped image (which is the size of the bounding box plus 5% increase).
            - This ensures that the image is at the same scale as the ruler when the ruler scale was extracted in Metadata.
-      * Images retain the original file name and we add the suffix "_segmented".
+      * The output filename is based on the image filename adding the filename suffix "_segmented".
       * The segmented image is saved in the folder **Segmented**.
       
 The steps are represented in the following workflow diagram.
@@ -41,13 +41,12 @@ The steps are represented in the following workflow diagram.
 2. Snakefile
 
 3. Scripts for
-   - Generating metadata (in particular bounding box, bbox) [code here](https://github.com/hdr-bgnn/drexel_metadata/blob/Thibault/gen_metadata_mini/scripts/gen_metadata.py)
+   - Generating metadata (in particular bounding box, bbox) [code here](https://github.com/hdr-bgnn/drexel_metadata/blob/main/gen_metadata.py)
    - Cropping the fish using bbox and generating cropped image [code here](https://github.com/hdr-bgnn/Crop_image/blob/main/Crop_image_main.py)
-   - Traits segmentation [code here](https://github.com/hdr-bgnn/BGNN-trait-segmentation/blob/main/Segment_mini/scripts/segmentation_main.py)
+   - Traits segmentation [code here](https://github.com/hdr-bgnn/BGNN-trait-segmentation)
  
 4. Containers
-   - these are available at https://cloud.sylabs.io/library/thibaulttabarin
-   - The rest is in the release on their respective gihub repo
+   - these are pulled from the respective GitHub repositories
 
 5. Data
    - **Images** : store the ouput from the Download step. Images downloaded from Tulane server
@@ -55,33 +54,7 @@ The steps are represented in the following workflow diagram.
    - **Cropped** : store the ouput from Crop image. 
    - **Segmented** : store the ouput from Segment trait using code developed by M. Maruf (Virginia Tech)
 
-# 2- Setup and Requirements
-
-   - To start with OSC system check instructions in Setup_Snakemake_OSC.txt. (not up to date, for question post issues)
-   - _Todo copy paste the contain of Setup_Snakemake_OSC.txt here and format it nicely... Probably a lot of typo to fix_
-
-# 3- Download models
-
-   _Not sure if this is relevant here... Keep it for the moment. This should go with the documentation for indivdual code on ecah correponding repository_
-   *Models for segment trait* : located at https://drive.google.com/uc?id=1HBSGXbWw5Vorj82buF-gCi6S2DpF4mFL
-   Follow instruction in BGNN_Snakemake/Containers/Singularity_def_segment_trait/Scripts/saved_models/load.txt
-   or
-   
-   ```
-   cd ~/BGNN_Snakemake/Containers/Singularity_def_segment_trait/Scripts
-   gdown -O saved_models/ https://drive.google.com/uc?id=1HBSGXbWw5Vorj82buF-gCi6S2DpF4mFL
-   ```
-   
-   *Models for generate metadata* : https://drive.google.com/file/d/1QWzmHdF1L_3hbjM85nOjfdHsm-iqQptG
-   
-
-# 4- Usage and test
-   
-   ```
-   snakemake --cores 1 --use-singularity --config list=List/list_lepomis_INHS.csv
-   ```
-
-# 5- Codes and Containers location
+# 2- Codes and Containers location
 
 Some of the containers are created using GitHub action, some other are created using singularity remote builder. We are currently transitioning all the containers to github action.
 
@@ -104,7 +77,7 @@ There are 3 containers of interest:
    Usage : segmentation_main.py {Cropped.png} {Segmented.png}
    ```
 
-# 6- Quick start with OSC
+# 3- Quick start with OSC
 
 ## 1- Using interactive (command sinteractive)
 
