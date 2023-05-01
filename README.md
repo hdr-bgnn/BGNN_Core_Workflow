@@ -6,7 +6,7 @@ First complete version of the BGNN image segmentation workflow managed using sna
 The image segmentation workflow is managed using snakemake, a user-friendly python workflow manager. Snakemake uses a syntax based on python and can use python code in the definition of the workflow. 
 
 The segmentation workflow consists of the following steps each defined by a "rule". 
-The output of each rule is store to specific folder that is produced by the worrkflow:
+The output of each rule is stored to a specific folder that is produced by the workflow:
    1. Download the fish **Images** from [Fish-AIR](https://fishair.org/) using a simple bash script.
       * Images are saved to the folder **Images**.
    
