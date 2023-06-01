@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/465397579.svg)](https://zenodo.org/badge/latestdoi/465397579)
+
 # BGNN_Snakemake
 First complete version of the BGNN image segmentation workflow managed using snakemake.
 
