@@ -23,7 +23,7 @@ rule generate_metadata:
         mask = 'Mask/{image}_mask.png'
     log: 'logs/generate_metadata_{image}.log'
     container:
-        'docker://ghcr.io/hdr-bgnn/drexel_metadata:0.5'
+        'docker://ghcr.io/hdr-bgnn/drexel_metadata:0.6'
     shell: 'gen_metadata.py {input} --device cpu --outfname {output.metadata} --maskfname {output.mask} > {log} 2>&1'
 
 # Transform metadata into a format compatible with the following rules
@@ -52,7 +52,7 @@ rule segment_image:
     output: 'Segmented/{image}_segmented.png'
     log: 'logs/segment_image_{image}.log'
     container:
-        'docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.6'
+        'docker://ghcr.io/hdr-bgnn/bgnn-trait-segmentation:0.0.7'
     shell:
         'segmentation_main_rescale_origin.py {input} {output} > {log} 2>&1'
 
