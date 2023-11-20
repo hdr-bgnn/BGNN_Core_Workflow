@@ -1,5 +1,6 @@
 cff-version: 1.0.0
 date-released: "2023-07-25"
+abstract: "This is the BGNN image segmentation workflow managed using snakemake. This workflow contains components to extract image metadata, download images, crop images, and feed images through a segmentation pipeline. The intent is for this to be used as a subworkflow as part of a larger imageomic project."
 authors:
   - family-names: Tabarin
     given-names: Thibault
@@ -14,7 +15,7 @@ authors:
     given-names: Hilmar
     orcid: "https://orcid.org/0000-0001-9107-0714"
 identifiers:
-  - description: "This is the BGNN image segmentation workflow managed using snakemake. This workflow contains components to extract image metadata, download images, crop images, and feed images through a segmentation pipeline. The intent is for this to be used as a subworkflow as part of a larger imageomic project."
+  - description: "Snapshot of BGNN_Core_Workflow: Version 1.0.0"
     type: doi
     value: 10.5281/zenodo.7987705
 keywords:
